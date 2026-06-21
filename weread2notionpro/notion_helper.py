@@ -112,7 +112,10 @@ class NotionHelper:
             raise Exception(f"获取NotionID失败，请检查输入的Url是否正确")
 
     def search_database(self, block_id):
-        children = self.client.blocks.children.list(block_id=block_id)["results"]
+        try:
+            children = self.client.blocks.children.list(block_id=block_id)["results"]
+        except Exception:
+            return
         # 遍历子块
         for child in children:
             # 检查子块的类型
