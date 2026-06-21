@@ -92,6 +92,13 @@ class NotionHelper:
         self.setting_database_id = self.database_id_dict.get(
             self.database_name_dict.get("SETTING_DATABASE_NAME")
         )
+        if self.book_database_id is None:
+            raise Exception(
+                f"没有找到「{self.database_name_dict.get('BOOK_DATABASE_NAME')}」数据库，请确认：\n"
+                f"1. Notion集成已授权访问该页面\n"
+                f"2. 页面URL({os.getenv('NOTION_PAGE')})正确\n"
+                f"3. 页面内包含了名为「{self.database_name_dict.get('BOOK_DATABASE_NAME')}」的数据库"
+            )
         self.update_book_database()
         if self.read_database_id is None:
             self.create_database()
