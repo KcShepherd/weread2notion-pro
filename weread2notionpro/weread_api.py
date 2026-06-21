@@ -31,6 +31,7 @@ class WeReadApi:
             {
                 "vid": self.vid,
                 "skey": self.skey,
+                "accessToken": self.skey,
                 "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
                 "baseapi": "32",
                 "appver": "8.2.5.10163885",
@@ -101,9 +102,13 @@ class WeReadApi:
         if r.ok:
             return r.json()
         else:
-            errcode = r.json().get("errcode",0)
-            self.handle_errcode(errcode)
-            raise Exception(f"Could not get bookshelf {r.text}")
+            print(f"Bookshelf API status={r.status_code}, text={r.text[:500]}")
+            try:
+                errcode = r.json().get("errcode",0)
+                self.handle_errcode(errcode)
+            except:
+                pass
+            raise Exception(f"Could not get bookshelf, status={r.status_code}")
         
     def handle_errcode(self,errcode):
         if( errcode== -2012 or errcode==-2010):
@@ -208,9 +213,13 @@ class WeReadApi:
         if r.ok:
             return r.json()
         else:
-            errcode = r.json().get("errcode",0)
-            self.handle_errcode(errcode)
-            raise Exception(f"get history data failed {r.text}")
+            print(f"History API status={r.status_code}, text={r.text[:500]}")
+            try:
+                errcode = r.json().get("errcode",0)
+                self.handle_errcode(errcode)
+            except:
+                pass
+            raise Exception(f"get history data failed, status={r.status_code}")
 
     
 
