@@ -268,6 +268,8 @@ def get_properties(dict1, dict2):
 
 def get_property_value(property):
     """从Property中获取值"""
+    if property is None:
+        return None
     type = property.get("type")
     content = property.get(type)
     if content is None:
