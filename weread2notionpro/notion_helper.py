@@ -140,8 +140,10 @@ class NotionHelper:
     def update_book_database(self):
         """更新数据库"""
         response = self.client.databases.retrieve(database_id=self.book_database_id)
-        id = response.get("id")
         properties = response.get("properties")
+        if properties is None:
+            print(f"Warning: 无法获取书架数据库属性，response keys: {response.keys()}")
+            return
         update_properties = {}
         if (
             properties.get("阅读时长") is None
