@@ -118,8 +118,9 @@ class WeReadApi:
         if r.ok:
             data = r.json()
             if self.api_key:
-                print(f"get_bookshelf keys: {list(data.keys()) if isinstance(data, dict) else type(data)}")
-                print(f"get_bookshelf sample: {json.dumps(data, ensure_ascii=False)[:500]}")
+                print(f"get_bookshelf keys: {list(data.keys()) if isinstance(data, dict) else type(data)}", flush=True)
+                if isinstance(data, dict):
+                    print(f"get_bookshelf sample: {json.dumps(data, ensure_ascii=False)[:800]}", flush=True)
             return data
         raise Exception(f"Could not get bookshelf, status={r.status_code}")
 

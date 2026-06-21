@@ -159,8 +159,13 @@ def main():
     global notion_books
     global archive_dict
     bookshelf_books = weread_api.get_bookshelf()
+    if bookshelf_books is None:
+        raise Exception("get_bookshelf returned None")
     notion_books = notion_helper.get_all_book()
     bookProgress = bookshelf_books.get("bookProgress")
+    if bookProgress is None:
+        print(f"get_bookshelf returned keys: {list(bookshelf_books.keys())}", flush=True)
+        raise Exception("bookProgress is None — gateway response format may differ from direct API")
     bookProgress = {book.get("bookId"): book for book in bookProgress}
     for archive in bookshelf_books.get("archive"):
         name = archive.get("name")
