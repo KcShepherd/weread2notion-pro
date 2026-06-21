@@ -21,18 +21,27 @@ WEREAD_HISTORY_URL = "https://i.weread.qq.com/readdata/summary?synckey=0"
 
 class WeReadApi:
     def __init__(self):
-        self.cookie = self.get_cookie()
+        self.api_key = os.getenv("WEREAD_API_KEY", "")
+        self.cookie = os.getenv("WEREAD_COOKIE", "")
         self.session = requests.Session()
-        self.session.cookies = self.parse_cookie_string()
-        # 从Cookie中提取 wr_vid 和 wr_skey，用于i.weread.qq.com移动端API认证
-        self.vid = self.extract_cookie_value("wr_vid")
-        self.skey = self.extract_cookie_value("wr_skey")
-        # 先只用Cookie认证，不加vid/skey头避免冲突
-        self.session.headers.update(
-            {
-                "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
-            }
-        )
+        # 优先用 API Key (Bearer鉴权)，否则用 Cookie
+        if self.api_key:
+            print("使用 WEREAD_API_KEY 认证")
+            self.session.headers.update(
+                {
+                    "Authorization": f"Bearer {self.api_key}",
+                    "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
+                }
+            )
+        else:
+            print("使用 WEREAD_COOKIE 认证")
+            self.cookie = self.get_cookie()
+            self.session.cookies = self.parse_cookie_string()
+            self.session.headers.update(
+                {
+                    "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
+                }
+            )
 
     def extract_cookie_value(self, key):
         """从cookie字符串中提取指定key的值"""
