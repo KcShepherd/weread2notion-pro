@@ -7,7 +7,7 @@ setup(
         "requests",
         "pendulum",
         "retrying",
-        "notion-client",
+        "notion-client==2.2.1",
         "github-heatmap",
     ],
     entry_points={
