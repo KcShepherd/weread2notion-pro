@@ -35,8 +35,6 @@ class WeReadApi:
                     "Content-Type": "application/json",
                 }
             )
-            # 获取可用 API 列表，用于确定正确的 api_name
-            self._list_apis()
         else:
             print("使用 WEREAD_COOKIE 认证")
             self.cookie = self.get_cookie()
@@ -48,25 +46,14 @@ class WeReadApi:
             )
 
     def _gateway_post(self, api_name, params=None):
-        """通过 Agent Gateway 发送请求，api_name 如 'shelfSync'、'notebooklist' 等"""
+        """通过 Agent Gateway 发送请求"""
         gw_body = {"api_name": api_name}
         if params:
             gw_body.update(params)
-
-        print(f"Gateway -> {api_name}")
         r = self.session.post(GATEWAY_URL, json=gw_body)
         if not r.ok:
-            print(f"Gateway status={r.status_code}, text={r.text[:800]}")
+            print(f"Gateway {api_name}: status={r.status_code}, response={r.text[:300]}")
         return r
-
-    def _list_apis(self):
-        """获取可用的 API 列表"""
-        r = self.session.post(GATEWAY_URL, json={"api_name": "/_list"})
-        if r.ok:
-            apis = r.json()
-            print(f"可用API列表: {json.dumps(apis, ensure_ascii=False, indent=2)[:5000]}")
-            return apis
-        return None
 
     def extract_cookie_value(self, key):
         """从cookie字符串中提取指定key的值"""
@@ -241,7 +228,7 @@ class WeReadApi:
     def get_chapter_info(self, bookId):
         body = {"bookIds": [bookId], "synckeys": [0], "teenmode": 0}
         if self.api_key:
-            r = self._gateway_post("/book/chapterInfos", body=body)
+            r = self._gateway_post("/book/chapterInfos", params=body)
         else:
             self.session.get(WEREAD_URL)
             r = self.session.post(WEREAD_CHAPTER_INFO, json=body)
