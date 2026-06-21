@@ -35,6 +35,8 @@ class WeReadApi:
                     "Content-Type": "application/json",
                 }
             )
+            # 获取可用 API 列表，用于确定正确的 api_name
+            self._list_apis()
         else:
             print("使用 WEREAD_COOKIE 认证")
             self.cookie = self.get_cookie()
@@ -45,27 +47,26 @@ class WeReadApi:
                 }
             )
 
-    def _gateway_post(self, api_path, params=None, body=None):
-        """通过 Agent Gateway 发送请求"""
-        gw_body = {"url": f"https://i.weread.qq.com{api_path}"}
+    def _gateway_post(self, api_name, params=None):
+        """通过 Agent Gateway 发送请求，api_name 如 'shelfSync'、'notebooklist' 等"""
+        gw_body = {"api_name": api_name}
         if params:
-            gw_body["params"] = params
-        if body:
-            gw_body["body"] = body
-            gw_body["method"] = "POST"
-        else:
-            gw_body["method"] = "GET"
+            gw_body.update(params)
 
-        print(f"Gateway -> {api_path}")
+        print(f"Gateway -> {api_name}")
         r = self.session.post(GATEWAY_URL, json=gw_body)
         if not r.ok:
-            print(f"Gateway status={r.status_code}, text={r.text[:500]}")
-            try:
-                errcode = r.json().get("errcode", 0)
-                self.handle_errcode(errcode)
-            except:
-                pass
+            print(f"Gateway status={r.status_code}, text={r.text[:800]}")
         return r
+
+    def _list_apis(self):
+        """获取可用的 API 列表"""
+        r = self.session.post(GATEWAY_URL, json={"api_name": "/_list"})
+        if r.ok:
+            apis = r.json()
+            print(f"可用API列表: {json.dumps(apis, ensure_ascii=False, indent=2)[:3000]}")
+            return apis
+        return None
 
     def extract_cookie_value(self, key):
         """从cookie字符串中提取指定key的值"""
