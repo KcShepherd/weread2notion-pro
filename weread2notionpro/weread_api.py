@@ -116,7 +116,11 @@ class WeReadApi:
             self.session.get(WEREAD_URL)
             r = self.session.get(WEREAD_SHELF_URL)
         if r.ok:
-            return r.json()
+            data = r.json()
+            if self.api_key:
+                print(f"get_bookshelf keys: {list(data.keys()) if isinstance(data, dict) else type(data)}")
+                print(f"get_bookshelf sample: {json.dumps(data, ensure_ascii=False)[:500]}")
+            return data
         raise Exception(f"Could not get bookshelf, status={r.status_code}")
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
