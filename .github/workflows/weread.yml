@@ -45,8 +45,8 @@ jobs:
           pip install --no-cache-dir --force-reinstall .
       - name: weread book sync
         run: |
-          book
+          python weread2notionpro/book.py
       - name: weread sync
         run: |
-          weread
+          python weread2notionpro/weread.py
       

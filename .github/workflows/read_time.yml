@@ -72,5 +72,5 @@ jobs:
           git push || echo "nothing to push"
       - name: read time sync
         run: |
-          read_time
+          python weread2notionpro/read_time.py
       
