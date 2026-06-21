@@ -17,20 +17,22 @@ WEREAD_REVIEW_LIST_URL = "https://i.weread.qq.com/review/list"
 WEREAD_BOOK_INFO = "https://i.weread.qq.com/book/info"
 WEREAD_READDATA_DETAIL = "https://i.weread.qq.com/readdata/detail"
 WEREAD_HISTORY_URL = "https://i.weread.qq.com/readdata/summary?synckey=0"
+WEREAD_SHELF_URL = "https://i.weread.qq.com/shelf/sync?synckey=0&teenmode=0&album=1&onlyBookid=0"
+
+# Agent Gateway 端点
+GATEWAY_URL = "https://i.weread.qq.com/api/agent/gateway"
 
 
 class WeReadApi:
     def __init__(self):
         self.api_key = os.getenv("WEREAD_API_KEY", "")
-        self.cookie = os.getenv("WEREAD_COOKIE", "")
         self.session = requests.Session()
-        # 优先用 API Key (Bearer鉴权)，否则用 Cookie
         if self.api_key:
-            print("使用 WEREAD_API_KEY 认证")
+            print("使用 WEREAD_API_KEY 认证 (Agent Gateway)")
             self.session.headers.update(
                 {
                     "Authorization": f"Bearer {self.api_key}",
-                    "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
+                    "Content-Type": "application/json",
                 }
             )
         else:
@@ -42,6 +44,28 @@ class WeReadApi:
                     "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
                 }
             )
+
+    def _gateway_post(self, api_path, params=None, body=None):
+        """通过 Agent Gateway 发送请求"""
+        gw_body = {"url": f"https://i.weread.qq.com{api_path}"}
+        if params:
+            gw_body["params"] = params
+        if body:
+            gw_body["body"] = body
+            gw_body["method"] = "POST"
+        else:
+            gw_body["method"] = "GET"
+
+        print(f"Gateway -> {api_path}")
+        r = self.session.post(GATEWAY_URL, json=gw_body)
+        if not r.ok:
+            print(f"Gateway status={r.status_code}, text={r.text[:500]}")
+            try:
+                errcode = r.json().get("errcode", 0)
+                self.handle_errcode(errcode)
+            except:
+                pass
+        return r
 
     def extract_cookie_value(self, key):
         """从cookie字符串中提取指定key的值"""
@@ -84,115 +108,109 @@ class WeReadApi:
 
     def parse_cookie_string(self):
         cookies_dict = {}
-        
-        # 使用正则表达式解析 cookie 字符串
         pattern = re.compile(r'([^=]+)=([^;]+);?\s*')
         matches = pattern.findall(self.cookie)
-        
         for key, value in matches:
             cookies_dict[key] = value.encode('unicode_escape').decode('ascii')
-        # 直接使用 cookies_dict 创建 cookiejar
         cookiejar = cookiejar_from_dict(cookies_dict)
-        
         return cookiejar
 
+    def handle_errcode(self, errcode):
+        if errcode == -2012 or errcode == -2010:
+            print(f"::error::微信读书认证失败(errcode={errcode})，Cookie或API Key可能已过期")
+
+    # ─── API 方法 ─────────────────────────────────────
+
     def get_bookshelf(self):
-        self.session.get(WEREAD_URL)
-        r = self.session.get(
-            "https://i.weread.qq.com/shelf/sync?synckey=0&teenmode=0&album=1&onlyBookid=0"
-        )
+        if self.api_key:
+            r = self._gateway_post("/shelf/sync", params={"synckey": "0", "teenmode": "0", "album": "1", "onlyBookid": "0"})
+        else:
+            self.session.get(WEREAD_URL)
+            r = self.session.get(WEREAD_SHELF_URL)
         if r.ok:
             return r.json()
-        else:
-            print(f"Bookshelf API status={r.status_code}, text={r.text[:500]}")
-            try:
-                errcode = r.json().get("errcode",0)
-                self.handle_errcode(errcode)
-            except:
-                pass
-            raise Exception(f"Could not get bookshelf, status={r.status_code}")
-        
-    def handle_errcode(self,errcode):
-        if( errcode== -2012 or errcode==-2010):
-            print(f"::error::微信读书Cookie过期了，请参考文档重新设置。https://mp.weixin.qq.com/s/B_mqLUZv7M1rmXRsMlBf7A")
+        raise Exception(f"Could not get bookshelf, status={r.status_code}")
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_notebooklist(self):
         """获取笔记本列表"""
-        self.session.get(WEREAD_URL)
-        r = self.session.get(WEREAD_NOTEBOOKS_URL)
+        if self.api_key:
+            r = self._gateway_post("/user/notebooks")
+        else:
+            self.session.get(WEREAD_URL)
+            r = self.session.get(WEREAD_NOTEBOOKS_URL)
         if r.ok:
             data = r.json()
             books = data.get("books")
             books.sort(key=lambda x: x["sort"])
             return books
         else:
-            errcode = r.json().get("errcode",0)
+            errcode = r.json().get("errcode", 0)
             self.handle_errcode(errcode)
             raise Exception(f"Could not get notebook list {r.text}")
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_bookinfo(self, bookId):
         """获取书的详情"""
-        self.session.get(WEREAD_URL)
-        params = dict(bookId=bookId)
-        r = self.session.get(WEREAD_BOOK_INFO, params=params)
+        if self.api_key:
+            r = self._gateway_post("/book/info", params={"bookId": bookId})
+        else:
+            self.session.get(WEREAD_URL)
+            r = self.session.get(WEREAD_BOOK_INFO, params=dict(bookId=bookId))
         if r.ok:
             return r.json()
         else:
-            errcode = r.json().get("errcode",0)
-            self.handle_errcode(errcode)
             print(f"Could not get book info {r.text}")
-
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_bookmark_list(self, bookId):
-        self.session.get(WEREAD_URL)
-        params = dict(bookId=bookId)
-        r = self.session.get(WEREAD_BOOKMARKLIST_URL, params=params)
+        if self.api_key:
+            r = self._gateway_post("/book/bookmarklist", params={"bookId": bookId})
+        else:
+            self.session.get(WEREAD_URL)
+            r = self.session.get(WEREAD_BOOKMARKLIST_URL, params=dict(bookId=bookId))
         if r.ok:
-            with open("bookmark.json","w") as f:
-                f.write(json.dumps(r.json(),indent=4,ensure_ascii=False))
+            with open("bookmark.json", "w") as f:
+                f.write(json.dumps(r.json(), indent=4, ensure_ascii=False))
             bookmarks = r.json().get("updated")
             return bookmarks
         else:
-            errcode = r.json().get("errcode",0)
+            errcode = r.json().get("errcode", 0)
             self.handle_errcode(errcode)
             raise Exception(f"Could not get {bookId} bookmark list")
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_read_info(self, bookId):
-        self.session.get(WEREAD_URL)
         params = dict(
-            noteCount=1,
-            readingDetail=1,
-            finishedBookIndex=1,
-            readingBookCount=1,
-            readingBookIndex=1,
-            finishedBookCount=1,
-            bookId=bookId,
-            finishedDate=1,
+            noteCount=1, readingDetail=1, finishedBookIndex=1,
+            readingBookCount=1, readingBookIndex=1, finishedBookCount=1,
+            bookId=bookId, finishedDate=1,
         )
-        headers = {
-            "baseapi":"32",
-            "appver":"8.2.5.10163885",
-            "basever":"8.2.5.10163885",
-            "osver":"12",
-            "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
-        }
-        r = self.session.get(WEREAD_READ_INFO_URL,headers=headers, params=params)
+        if self.api_key:
+            r = self._gateway_post("/book/readinfo", params=params)
+        else:
+            self.session.get(WEREAD_URL)
+            headers = {
+                "baseapi": "32", "appver": "8.2.5.10163885",
+                "basever": "8.2.5.10163885", "osver": "12",
+                "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
+            }
+            r = self.session.get(WEREAD_READ_INFO_URL, headers=headers, params=params)
         if r.ok:
             return r.json()
         else:
-            errcode = r.json().get("errcode",0)
+            errcode = r.json().get("errcode", 0)
             self.handle_errcode(errcode)
             raise Exception(f"get {bookId} read info failed {r.text}")
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_review_list(self, bookId):
-        self.session.get(WEREAD_URL)
         params = dict(bookId=bookId, listType=11, mine=1, syncKey=0)
-        r = self.session.get(WEREAD_REVIEW_LIST_URL, params=params)
+        if self.api_key:
+            r = self._gateway_post("/review/list", params=params)
+        else:
+            self.session.get(WEREAD_URL)
+            r = self.session.get(WEREAD_REVIEW_LIST_URL, params=params)
         if r.ok:
             reviews = r.json().get("reviews")
             reviews = list(map(lambda x: x.get("review"), reviews))
@@ -202,34 +220,30 @@ class WeReadApi:
             ]
             return reviews
         else:
-            errcode = r.json().get("errcode",0)
+            errcode = r.json().get("errcode", 0)
             self.handle_errcode(errcode)
             raise Exception(f"get {bookId} review list failed {r.text}")
 
-
-
-    
     def get_api_data(self):
-        self.session.get(WEREAD_URL)
-        r = self.session.get(WEREAD_HISTORY_URL)
+        if self.api_key:
+            r = self._gateway_post("/readdata/summary", params={"synckey": "0"})
+        else:
+            self.session.get(WEREAD_URL)
+            r = self.session.get(WEREAD_HISTORY_URL)
         if r.ok:
             return r.json()
         else:
             print(f"History API status={r.status_code}, text={r.text[:500]}")
-            try:
-                errcode = r.json().get("errcode",0)
-                self.handle_errcode(errcode)
-            except:
-                pass
             raise Exception(f"get history data failed, status={r.status_code}")
-
-    
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_chapter_info(self, bookId):
-        self.session.get(WEREAD_URL)
         body = {"bookIds": [bookId], "synckeys": [0], "teenmode": 0}
-        r = self.session.post(WEREAD_CHAPTER_INFO, json=body)
+        if self.api_key:
+            r = self._gateway_post("/book/chapterInfos", body=body)
+        else:
+            self.session.get(WEREAD_URL)
+            r = self.session.post(WEREAD_CHAPTER_INFO, json=body)
         if (
             r.ok
             and "data" in r.json()
