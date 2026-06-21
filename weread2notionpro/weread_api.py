@@ -64,7 +64,7 @@ class WeReadApi:
         r = self.session.post(GATEWAY_URL, json={"api_name": "/_list"})
         if r.ok:
             apis = r.json()
-            print(f"可用API列表: {json.dumps(apis, ensure_ascii=False, indent=2)[:3000]}")
+            print(f"可用API列表: {json.dumps(apis, ensure_ascii=False, indent=2)[:5000]}")
             return apis
         return None
 
