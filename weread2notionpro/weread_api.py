@@ -24,6 +24,29 @@ class WeReadApi:
         self.cookie = self.get_cookie()
         self.session = requests.Session()
         self.session.cookies = self.parse_cookie_string()
+        # 从Cookie中提取 wr_vid 和 wr_skey，用于i.weread.qq.com移动端API认证
+        self.vid = self.extract_cookie_value("wr_vid")
+        self.skey = self.extract_cookie_value("wr_skey")
+        self.session.headers.update(
+            {
+                "vid": self.vid,
+                "skey": self.skey,
+                "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
+                "baseapi": "32",
+                "appver": "8.2.5.10163885",
+                "osver": "12",
+                "basever": "8.2.5.10163885",
+                "Content-Type": "application/json; charset=UTF-8",
+            }
+        )
+
+    def extract_cookie_value(self, key):
+        """从cookie字符串中提取指定key的值"""
+        pattern = re.compile(rf"{key}=([^;]+);?")
+        match = pattern.search(self.cookie)
+        if match:
+            return match.group(1)
+        return ""
 
     def try_get_cloud_cookie(self, url, id, password):
         if url.endswith("/"):
