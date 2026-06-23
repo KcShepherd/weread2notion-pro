@@ -101,6 +101,43 @@ class NotionHelper:
                 f"3. 页面内包含了名为「{self.database_name_dict.get('BOOK_DATABASE_NAME')}」的数据库"
             )
         self.update_book_database()
+        # 补全划线/笔记/章节数据库的必需属性
+        if self.bookmark_database_id:
+            self.ensure_database_properties(self.bookmark_database_id, {
+                "Name": {"title": {}},
+                "bookId": {"rich_text": {}},
+                "range": {"rich_text": {}},
+                "bookmarkId": {"rich_text": {}},
+                "blockId": {"rich_text": {}},
+                "chapterUid": {"number": {}},
+                "bookVersion": {"number": {}},
+                "colorStyle": {"number": {}},
+                "type": {"number": {}},
+                "style": {"number": {}},
+            })
+        if self.review_database_id:
+            self.ensure_database_properties(self.review_database_id, {
+                "Name": {"title": {}},
+                "bookId": {"rich_text": {}},
+                "reviewId": {"rich_text": {}},
+                "blockId": {"rich_text": {}},
+                "range": {"rich_text": {}},
+                "abstract": {"rich_text": {}},
+                "chapterUid": {"number": {}},
+                "bookVersion": {"number": {}},
+                "type": {"number": {}},
+                "star": {"number": {}},
+            })
+        if self.chapter_database_id:
+            self.ensure_database_properties(self.chapter_database_id, {
+                "Name": {"title": {}},
+                "blockId": {"rich_text": {}},
+                "chapterUid": {"number": {}},
+                "chapterIdx": {"number": {}},
+                "readAhead": {"number": {}},
+                "updateTime": {"number": {}},
+                "level": {"number": {}},
+            })
         if self.read_database_id is None:
             self.create_database()
         if self.setting_database_id is None:
@@ -137,6 +174,20 @@ class NotionHelper:
             # 如果子块有子块，递归调用函数
             if "has_children" in child and child["has_children"]:
                 self.search_database(child["id"])
+
+    def ensure_database_properties(self, database_id, required_properties):
+        """补全数据库缺失的属性（通用方法）"""
+        response = self.client.databases.retrieve(database_id=database_id)
+        existing = response.get("properties", {})
+        if not existing:
+            return
+        to_add = {}
+        for name, prop_config in required_properties.items():
+            if name not in existing or existing[name].get("type") != prop_config.get("type"):
+                to_add[name] = prop_config
+        if to_add:
+            print(f"补全数据库属性: {list(to_add.keys())}")
+            self.client.databases.update(database_id=database_id, properties=to_add)
 
     def update_book_database(self):
         """补全书架数据库缺失的属性"""
