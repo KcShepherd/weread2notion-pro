@@ -221,10 +221,11 @@ def get_first_and_last_day_of_week(date):
 
     return first_day_of_week, last_day_of_week
 
-def get_properties(dict1, dict2):
+def get_properties(dict1, dict2, actual_types=None):
     properties = {}
     for key, value in dict1.items():
         type = dict2.get(key)
+        actual = actual_types.get(key) if actual_types else None
         if value == None:
             continue
         property = None
@@ -247,14 +248,18 @@ def get_properties(dict1, dict2):
                 ]
             }
         elif type == DATE:
-            property = {
-                "date": {
-                    "start": pendulum.from_timestamp(
-                        value, tz="Asia/Shanghai"
-                    ).to_datetime_string(),
-                    "time_zone": "Asia/Shanghai",
+            if actual == "number":
+                # Notion 属性实际为 NUMBER，按时间戳写入
+                property = {"number": value if isinstance(value, (int, float)) else 0}
+            else:
+                property = {
+                    "date": {
+                        "start": pendulum.from_timestamp(
+                            value, tz="Asia/Shanghai"
+                        ).to_datetime_string(),
+                        "time_zone": "Asia/Shanghai",
+                    }
                 }
-            }
         elif type == URL:
             property = {"url": value}
         elif type == SELECT:

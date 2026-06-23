@@ -48,6 +48,7 @@ class NotionHelper:
     show_color = True
     block_type = "callout"
     sync_bookmark = True
+    book_property_types = {}
     def __init__(self):
         self.client = Client(auth=os.getenv("NOTION_TOKEN"), log_level=logging.ERROR)
         self.__cache = {}
@@ -190,6 +191,12 @@ class NotionHelper:
             self.client.databases.update(
                 database_id=self.book_database_id, properties=update_properties
             )
+        # 缓存实际属性类型，供 get_properties 做类型适配
+        response = self.client.databases.retrieve(database_id=self.book_database_id)
+        self.book_property_types = {
+            name: prop.get("type")
+            for name, prop in response.get("properties", {}).items()
+        }
 
     def create_database(self):
         title = [
