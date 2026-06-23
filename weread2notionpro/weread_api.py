@@ -232,7 +232,7 @@ class WeReadApi:
     def get_review_list(self, bookId):
         """获取个人想法/点评（Gateway 用 /review/list/mine）"""
         if self.api_key:
-            r = self._gateway_post("/review/list/mine", params={"bookId": bookId})
+            r = self._gateway_post("/review/list/mine", params={"bookid": bookId})
             if r.ok:
                 data = r.json()
                 reviews = data.get("reviews", [])
