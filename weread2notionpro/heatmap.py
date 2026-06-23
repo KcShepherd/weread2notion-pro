@@ -102,10 +102,10 @@ def generate_svg(daily_data, year, name, colors):
 
     # 年份 + 总时长
     total_seconds = sum(daily_data.values())
-    total_hours = round(total_seconds / 3600, 1)
+    total_hours = int(total_seconds / 3600)
     lines.append(
         f'<text x="{label_width}" y="14" style="font-size:11px;font-family:Arial;'
-        f'font-weight:bold;" fill="#333">{year}: {total_hours} hours'
+        f'font-weight:bold;" fill="#333">{year}累计阅读 {total_hours} 小时'
         f'</text>'
     )
 
