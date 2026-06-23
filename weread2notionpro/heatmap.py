@@ -105,7 +105,7 @@ def generate_svg(daily_data, year, name, colors):
     total_hours = int(total_seconds / 3600)
     lines.append(
         f'<text x="{label_width}" y="14" style="font-size:11px;font-family:Arial;'
-        f'font-weight:bold;" fill="#333">{year}累计阅读 {total_hours} 小时'
+        f'font-weight:bold;" fill="#333">{year}年累计阅读 {total_hours} 小时'
         f'</text>'
     )
 
