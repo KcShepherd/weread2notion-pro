@@ -1,24 +1,32 @@
-name: weread note sync
+name: weread sync
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    # 北京时间 08:00 和 20:00 (UTC 00:00 / 12:00)
+    - cron: "0 0,12 * * *"
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   sync:
     name: Sync
     runs-on: ubuntu-latest
     env:
+      # ── 认证 ──
       NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
       NOTION_PAGE: ${{ secrets.NOTION_PAGE }}
-      WEREAD_COOKIE: ${{ secrets.WEREAD_COOKIE }}
       WEREAD_API_KEY: ${{ secrets.WEREAD_API_KEY }}
+      WEREAD_COOKIE: ${{ secrets.WEREAD_COOKIE }}
       CC_URL: ${{ secrets.CC_URL }}
       CC_ID: ${{ secrets.CC_ID }}
       CC_PASSWORD: ${{ secrets.CC_PASSWORD }}
+      # ── 热力图 ──
+      HEATMAP_BLOCK_ID: ${{ secrets.HEATMAP_BLOCK_ID }}
+      NAME: ${{ secrets.NAME }}
+      # ── 数据库名称（可覆盖默认值） ──
       BOOK_DATABASE_NAME: ${{ vars.BOOK_DATABASE_NAME }}
       AUTHOR_DATABASE_NAME: ${{ vars.AUTHOR_DATABASE_NAME }}
       CATEGORY_DATABASE_NAME: ${{ vars.CATEGORY_DATABASE_NAME }}
@@ -29,23 +37,73 @@ jobs:
       WEEK_DATABASE_NAME: ${{ vars.WEEK_DATABASE_NAME }}
       MONTH_DATABASE_NAME: ${{ vars.MONTH_DATABASE_NAME }}
       DAY_DATABASE_NAME: ${{ vars.DAY_DATABASE_NAME }}
+      # ── 热力图样式 ──
+      YEAR: ${{ vars.YEAR }}
+      # ── Git 信息 ──
       REF: ${{ github.ref }}
       REPOSITORY: ${{ github.repository }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version: "3.11"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: weread book sync
+
+      # ── 1. 书架 + 书籍信息同步 ──
+      - name: Sync bookshelf & book info
+        run: python -m weread2notionpro.book
+
+      # ── 2. 笔记 + 划线同步 ──
+      - name: Sync notes & bookmarks
+        run: python -m weread2notionpro.weread
+
+      # ── 3. 热力图生成 ──
+      - name: Remove old OUT_FOLDER
+        run: rm -rf ./OUT_FOLDER
+
+      - name: Set default year if not provided
+        if: env.YEAR == ''
+        run: echo "YEAR=$(date +"%Y")" >> $GITHUB_ENV
+
+      - name: Generate heatmap
+        continue-on-error: true
         run: |
-          python -m weread2notionpro.book
-      - name: weread sync
+          github_heatmap weread \
+            --year $YEAR \
+            --me "${{ secrets.NAME }}" \
+            --without-type-name \
+            --background-color=${{ vars.background_color || '#FFFFFF' }} \
+            --track-color=${{ vars.track_color || '#ACE7AE' }} \
+            --special-color1=${{ vars.special_color || '#69C16E' }} \
+            --special-color2=${{ vars.special_color2 || '#549F57' }} \
+            --dom-color=${{ vars.dom_color || '#EBEDF0' }} \
+            --text-color=${{ vars.text_color || '#000000' }}
+
+      - name: Rename weread.svg to random name
+        continue-on-error: true
         run: |
-          python -m weread2notionpro.weread
-      
+          cd OUT_FOLDER
+          find . -type f ! -name "weread.svg" -exec rm -f {} +
+          cd ..
+          RANDOM_FILENAME=$(uuidgen).svg
+          mv ./OUT_FOLDER/weread.svg ./OUT_FOLDER/$RANDOM_FILENAME
+          echo "Renamed file to $RANDOM_FILENAME"
+
+      - name: Push heatmap
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m 'update heatmap' || echo "nothing to commit"
+          git push || echo "nothing to push"
+
+      # ── 4. 阅读时长同步 ──
+      - name: Sync reading time
+        run: python -m weread2notionpro.read_time

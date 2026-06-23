@@ -21,6 +21,7 @@ WEREAD_SHELF_URL = "https://i.weread.qq.com/shelf/sync?synckey=0&teenmode=0&albu
 
 # Agent Gateway 端点
 GATEWAY_URL = "https://i.weread.qq.com/api/agent/gateway"
+SKILL_VERSION = "1.0.3"
 
 
 class WeReadApi:
@@ -47,12 +48,21 @@ class WeReadApi:
 
     def _gateway_post(self, api_name, params=None):
         """通过 Agent Gateway 发送请求"""
-        gw_body = {"api_name": api_name}
+        gw_body = {"api_name": api_name, "skill_version": SKILL_VERSION}
         if params:
             gw_body.update(params)
         r = self.session.post(GATEWAY_URL, json=gw_body)
         if not r.ok:
             print(f"Gateway {api_name}: status={r.status_code}, response={r.text[:300]}")
+        else:
+            try:
+                data = r.json()
+                if "upgrade_info" in data:
+                    msg = data["upgrade_info"].get("message", "请更新 skill 版本")
+                    print(f"::error::Skill 版本过旧({SKILL_VERSION})，需要升级: {msg}")
+                    raise Exception(f"Skill upgrade required: {msg}")
+            except (ValueError, KeyError):
+                pass  # 非 JSON 回包或非 upgrade_info，忽略
         return r
 
     def extract_cookie_value(self, key):
