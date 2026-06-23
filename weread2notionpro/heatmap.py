@@ -66,7 +66,7 @@ def generate_svg(daily_data, year, name, colors):
     cell_size = 12
     cell_gap = 2
     label_width = 40
-    header_height = 18
+    header_height = 28
     bottom_margin = 8
     cols = total_weeks
     rows = 7
@@ -104,7 +104,7 @@ def generate_svg(daily_data, year, name, colors):
     total_seconds = sum(daily_data.values())
     total_hours = round(total_seconds / 3600, 1)
     lines.append(
-        f'<text x="{label_width}" y="13" style="font-size:11px;font-family:Arial;'
+        f'<text x="{label_width}" y="14" style="font-size:11px;font-family:Arial;'
         f'font-weight:bold;" fill="#333">{year}: {total_hours} hours'
         f'</text>'
     )
