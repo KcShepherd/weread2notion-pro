@@ -1,6 +1,5 @@
 """生成微信读书年度热力图 SVG（通过 API Key 鉴权）"""
 import os
-import uuid
 from datetime import datetime, timedelta
 
 from weread2notionpro.weread_api import WeReadApi
@@ -200,7 +199,8 @@ def main():
     svg = generate_svg(daily, year, name, colors)
 
     os.makedirs("OUT_FOLDER", exist_ok=True)
-    filename = f"{uuid.uuid4()}.svg"
+    # 固定文件名 weread.svg，兼容 workflow 后续的 rename 步骤
+    filename = "weread.svg"
     filepath = os.path.join("OUT_FOLDER", filename)
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(svg)
