@@ -184,14 +184,36 @@ class WeReadApi:
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_read_info(self, bookId):
-        params = dict(
-            noteCount=1, readingDetail=1, finishedBookIndex=1,
-            readingBookCount=1, readingBookIndex=1, finishedBookCount=1,
-            bookId=bookId, finishedDate=1,
-        )
+        """获取阅读进度（Gateway 用 /book/getprogress，旧 cookie 用 /book/readinfo）"""
         if self.api_key:
-            r = self._gateway_post("/book/readinfo", params=params)
+            r = self._gateway_post("/book/getprogress", params={"bookId": bookId})
+            if r.ok:
+                data = r.json()
+                bp = data.get("book", {})
+                progress = bp.get("progress", 0)
+                reading_time = bp.get("recordReadingTime", 0)
+                # 映射为 book.py 期望的旧格式
+                return {
+                    "markedStatus": 4 if progress == 100 and bp.get("finishTime") else (1 if progress == 0 else 0),
+                    "readingProgress": progress,
+                    "readingTime": reading_time,
+                    "totalReadDay": 0,
+                    "finishedDate": bp.get("finishTime", 0),
+                    "lastReadingDate": bp.get("updateTime", 0),
+                    "beginReadingDate": 0,
+                    "readDetail": {"data": []},  # Gateway 不提供每日明细
+                    "bookInfo": {},
+                }
+            else:
+                errcode = r.json().get("errcode", 0)
+                self.handle_errcode(errcode)
+                raise Exception(f"get {bookId} read info failed {r.text}")
         else:
+            params = dict(
+                noteCount=1, readingDetail=1, finishedBookIndex=1,
+                readingBookCount=1, readingBookIndex=1, finishedBookCount=1,
+                bookId=bookId, finishedDate=1,
+            )
             self.session.get(WEREAD_URL)
             headers = {
                 "baseapi": "32", "appver": "8.2.5.10163885",
@@ -199,12 +221,12 @@ class WeReadApi:
                 "User-Agent": "WeRead/8.2.5 WRBrand/xiaomi Dalvik/2.1.0 (Linux; U; Android 12; Redmi Note 7 Pro Build/SQ3A.220705.004)",
             }
             r = self.session.get(WEREAD_READ_INFO_URL, headers=headers, params=params)
-        if r.ok:
-            return r.json()
-        else:
-            errcode = r.json().get("errcode", 0)
-            self.handle_errcode(errcode)
-            raise Exception(f"get {bookId} read info failed {r.text}")
+            if r.ok:
+                return r.json()
+            else:
+                errcode = r.json().get("errcode", 0)
+                self.handle_errcode(errcode)
+                raise Exception(f"get {bookId} read info failed {r.text}")
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_review_list(self, bookId):
