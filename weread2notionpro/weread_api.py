@@ -230,36 +230,62 @@ class WeReadApi:
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_review_list(self, bookId):
-        params = dict(bookId=bookId, listType=11, mine=1, syncKey=0)
+        """获取个人想法/点评（Gateway 用 /review/list/mine）"""
         if self.api_key:
-            r = self._gateway_post("/review/list", params=params)
+            r = self._gateway_post("/review/list/mine", params={"bookId": bookId})
+            if r.ok:
+                data = r.json()
+                reviews = data.get("reviews", [])
+                # 提取 review 子对象，type=4(整本书评) 改为 chapterUid=1000000
+                result = []
+                for item in reviews:
+                    review = item.get("review", {})
+                    # 新接口无 type 字段：chapterName 为空表示整本书评
+                    if not review.get("chapterName"):
+                        review["chapterUid"] = 1000000
+                    result.append(review)
+                return result
+            else:
+                errcode = r.json().get("errcode", 0)
+                self.handle_errcode(errcode)
+                raise Exception(f"get {bookId} review list failed {r.text}")
         else:
+            params = dict(bookId=bookId, listType=11, mine=1, syncKey=0)
             self.session.get(WEREAD_URL)
             r = self.session.get(WEREAD_REVIEW_LIST_URL, params=params)
-        if r.ok:
-            reviews = r.json().get("reviews")
-            reviews = list(map(lambda x: x.get("review"), reviews))
-            reviews = [
-                {"chapterUid": 1000000, **x} if x.get("type") == 4 else x
-                for x in reviews
-            ]
-            return reviews
-        else:
-            errcode = r.json().get("errcode", 0)
-            self.handle_errcode(errcode)
-            raise Exception(f"get {bookId} review list failed {r.text}")
+            if r.ok:
+                reviews = r.json().get("reviews")
+                reviews = list(map(lambda x: x.get("review"), reviews))
+                reviews = [
+                    {"chapterUid": 1000000, **x} if x.get("type") == 4 else x
+                    for x in reviews
+                ]
+                return reviews
+            else:
+                errcode = r.json().get("errcode", 0)
+                self.handle_errcode(errcode)
+                raise Exception(f"get {bookId} review list failed {r.text}")
 
     def get_api_data(self):
+        """获取阅读时长数据（Gateway 用 /readdata/detail）"""
         if self.api_key:
-            r = self._gateway_post("/readdata/summary", params={"synckey": "0"})
+            r = self._gateway_post("/readdata/detail", params={"mode": "monthly"})
+            if r.ok:
+                data = r.json()
+                # 映射为旧格式 {readTimes: {timestamp: seconds}}
+                read_times = data.get("readTimes", {})
+                return {"readTimes": read_times}
+            else:
+                print(f"History API status={r.status_code}, text={r.text[:500]}")
+                raise Exception(f"get history data failed, status={r.status_code}")
         else:
             self.session.get(WEREAD_URL)
             r = self.session.get(WEREAD_HISTORY_URL)
-        if r.ok:
-            return r.json()
-        else:
-            print(f"History API status={r.status_code}, text={r.text[:500]}")
-            raise Exception(f"get history data failed, status={r.status_code}")
+            if r.ok:
+                return r.json()
+            else:
+                print(f"History API status={r.status_code}, text={r.text[:500]}")
+                raise Exception(f"get history data failed, status={r.status_code}")
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_chapter_info(self, bookId):
