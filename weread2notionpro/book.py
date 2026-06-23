@@ -162,35 +162,42 @@ def main():
     if bookshelf_books is None:
         raise Exception("get_bookshelf returned None")
     notion_books = notion_helper.get_all_book()
-    bookProgress = bookshelf_books.get("bookProgress")
-    if bookProgress is None:
+
+    # Gateway /shelf/sync 回包为 {books, albums, mp, archive}，无 bookProgress
+    shelf_books = bookshelf_books.get("books", [])
+    if not shelf_books:
         print(f"get_bookshelf returned keys: {list(bookshelf_books.keys())}", flush=True)
-        raise Exception("bookProgress is None — gateway response format may differ from direct API")
-    bookProgress = {book.get("bookId"): book for book in bookProgress}
-    for archive in bookshelf_books.get("archive"):
+
+    for archive in bookshelf_books.get("archive", []):
         name = archive.get("name")
         bookIds = archive.get("bookIds")
         archive_dict.update({bookId: name for bookId in bookIds})
+
+    # 用 notebooks 的 sort 字段做变更检测（替代旧 bookProgress.readingTime 比较）
+    notebooks = weread_api.get_notebooklist()
+    if notebooks is None:
+        notebooks = []
+    notebook_dict = {d["bookId"]: d.get("sort", 0) for d in notebooks if "bookId" in d}
+
     not_need_sync = []
     for key, value in notion_books.items():
+        sort = notebook_dict.get(key)
         if (
-            (
-                key not in bookProgress
-                or value.get("readingTime") == bookProgress.get(key).get("readingTime")
-            )
-            and (archive_dict.get(key) == value.get("category"))
-            and (value.get("cover") is not None)
+            sort is not None                          # 有笔记的书籍
+            and sort == value.get("Sort")             # sort 未变 → 无新增笔记
+            and archive_dict.get(key) == value.get("category")
+            and value.get("cover") is not None
             and (
                 value.get("status") != "已读"
                 or (value.get("status") == "已读" and value.get("myRating"))
             )
         ):
             not_need_sync.append(key)
-    notebooks = weread_api.get_notebooklist()
-    notebooks = [d["bookId"] for d in notebooks if "bookId" in d]
-    books = bookshelf_books.get("books")
-    books = [d["bookId"] for d in books if "bookId" in d]
-    books = list((set(notebooks) | set(books)) - set(not_need_sync))
+        # 无笔记的书籍（sort is None）始终同步，确保阅读时长等字段更新
+
+    notebook_ids = set(notebook_dict.keys())
+    shelf_book_ids = {b["bookId"] for b in shelf_books if "bookId" in b}
+    books = list((notebook_ids | shelf_book_ids) - set(not_need_sync))
     for index, bookId in enumerate(books):
         insert_book_to_notion(books, index, bookId)
 
