@@ -263,21 +263,25 @@ class WeReadApi:
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def get_chapter_info(self, bookId):
-        body = {"bookIds": [bookId], "synckeys": [0], "teenmode": 0}
+        """获取章节目录（Gateway 用 /book/chapterinfo，旧 cookie 用批量接口）"""
         if self.api_key:
-            r = self._gateway_post("/book/chapterInfos", params=body)
-        else:
-            self.session.get(WEREAD_URL)
-            r = self.session.post(WEREAD_CHAPTER_INFO, json=body)
-        if (
-            r.ok
-            and "data" in r.json()
-            and len(r.json()["data"]) == 1
-            and "updated" in r.json()["data"][0]
-        ):
-            update = r.json()["data"][0]["updated"]
-            update.append(
-                {
+            r = self._gateway_post("/book/chapterinfo", params={"bookId": bookId})
+            if r.ok:
+                data = r.json()
+                chapters = data.get("chapters", [])
+                # 映射为旧格式 {chapterUid: {chapterUid, chapterIdx, title, level, updateTime, readAhead}}
+                result = {}
+                for ch in chapters:
+                    result[ch["chapterUid"]] = {
+                        "chapterUid": ch.get("chapterUid"),
+                        "chapterIdx": ch.get("chapterIdx"),
+                        "title": ch.get("title"),
+                        "level": ch.get("level"),
+                        "updateTime": ch.get("updateTime"),
+                        "readAhead": 0,  # Gateway 不返回此字段
+                    }
+                # 追加虚拟"点评"章节
+                result[1000000] = {
                     "chapterUid": 1000000,
                     "chapterIdx": 1000000,
                     "updateTime": 1683825006,
@@ -285,10 +289,33 @@ class WeReadApi:
                     "title": "点评",
                     "level": 1,
                 }
-            )
-            return {item["chapterUid"]: item for item in update}
+                return result
+            else:
+                raise Exception(f"get {bookId} chapter info failed {r.text}")
         else:
-            raise Exception(f"get {bookId} chapter info failed {r.text}")
+            body = {"bookIds": [bookId], "synckeys": [0], "teenmode": 0}
+            self.session.get(WEREAD_URL)
+            r = self.session.post(WEREAD_CHAPTER_INFO, json=body)
+            if (
+                r.ok
+                and "data" in r.json()
+                and len(r.json()["data"]) == 1
+                and "updated" in r.json()["data"][0]
+            ):
+                update = r.json()["data"][0]["updated"]
+                update.append(
+                    {
+                        "chapterUid": 1000000,
+                        "chapterIdx": 1000000,
+                        "updateTime": 1683825006,
+                        "readAhead": 0,
+                        "title": "点评",
+                        "level": 1,
+                    }
+                )
+                return {item["chapterUid"]: item for item in update}
+            else:
+                raise Exception(f"get {bookId} chapter info failed {r.text}")
 
     def transform_id(self, book_id):
         id_length = len(book_id)
