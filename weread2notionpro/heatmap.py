@@ -1,6 +1,8 @@
 """生成微信读书年度热力图 SVG（通过 API Key 鉴权）"""
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+
+CHINA_TZ = timezone(timedelta(hours=8))
 
 from weread2notionpro.weread_api import WeReadApi
 
@@ -146,7 +148,7 @@ def generate_svg(daily_data, year, name, colors):
         row = d.weekday()  # 0=Mon, 6=Sun
         # 把周日放到底部（GitHub 风格）
         display_row = (row + 1) % 7
-        ts = int(d.timestamp())
+        ts = int(d.replace(tzinfo=CHINA_TZ).timestamp())
         seconds = daily_data.get(ts, 0)
         c = color_for(seconds)
         x = label_width + col * (cell_size + cell_gap)
