@@ -1,78 +1,46 @@
 {
-    "synckey": 1781457770,
+    "synckey": 1782318532,
     "updated": [
         {
-            "bookId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ",
-            "chapterIdx": 21,
-            "bookmarkId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ_21_4878-5147",
-            "range": "4878-5147",
-            "markText": "我感受到了，看到了，也触摸到了我的罪业。这罪业并非全然源于那万恶的蛇巢：对孩子的恨意、对复仇的渴望和对金钱的痴迷。我的罪业还在于我拒绝在这团缠绕的蝰蛇之外找寻别的可能。我囿于这团阴毒的蛇结之中，将它视作我的心脏。我已无法分辨体内律动的声响，是我心房的泵动，还是那团蠕窜的长虫。在长达半个世纪的时间里，我所了解的自己皆非真实的自己。不仅如此，我还以己度人。我眼里看到的，唯有孩子脸上那点拙劣的贪婪。罗贝尔给我的愚钝印象，也在我脑中挥之不去。我从未想过，要撕开面目，要透过人的表象去触摸他们的内心。这本该是在我而立之年或不惑之年就悟出的道理。",
+            "bookId": "CB_0bz10l136GH471871DERDEr7",
+            "chapterIdx": 11,
+            "bookmarkId": "CB_0bz10l136GH471871DERDEr7_11_15397-15488",
+            "range": "15397-15488",
+            "markText": "这一做法的成功教会了我一个原则，后来我把它应用到生活的所有方面：想要拥有很多优势，而又不暴露于不可接受的劣势之下，最稳妥的方式是做出一系列良好的、互不相关的押注，彼此平衡，相互补充。",
             "colorStyle": 4,
             "type": 1,
-            "chapterUid": 21,
-            "createTime": 1781457770
+            "chapterUid": 11,
+            "createTime": 1782318532
         },
         {
-            "bookId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ",
-            "chapterIdx": 21,
-            "bookmarkId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ_21_966-1052",
-            "range": "966-1052",
-            "markText": "我的一生都困在自己从未真正拥有的迷狂里。如对月狂吠的家犬，我迷醉的不过是一抹幻梦。在六十八岁这一年才终于梦醒！真是置之死地而后生！但愿我还能多活几年，几月也好，几周也罢……",
+            "bookId": "CB_0bz10l136GH471871DERDEr7",
+            "chapterIdx": 11,
+            "bookmarkId": "CB_0bz10l136GH471871DERDEr7_11_9150-9177",
+            "range": "9150-9177",
+            "markText": "我喜欢在有趣的地方认识有趣的人，并通过他们的眼睛看世界",
             "colorStyle": 4,
             "type": 1,
-            "chapterUid": 21,
-            "createTime": 1781456962
-        },
-        {
-            "bookId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ",
-            "chapterIdx": 20,
-            "bookmarkId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ_20_8084-8181",
-            "range": "8084-8181",
-            "markText": "我逼着自己的孩子承认了谎言，而他们也并未推卸责任。整座宅子闹哄哄的，就像在举行一场没有音乐的古怪舞会。我逼迫自己聚焦于他们的罪行：正是因为他们，我跟伊莎没能见上最后一面，我们错过了最后的道别……",
-            "colorStyle": 4,
-            "type": 1,
-            "chapterUid": 20,
-            "createTime": 1781372937
-        },
-        {
-            "bookId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ",
-            "chapterIdx": 19,
-            "bookmarkId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ_19_4573-4717",
-            "range": "4573-4717",
-            "markText": "习惯被人偏爱的人，任何言行，都会本能地让人心生欢喜。而我，习惯被人憎恨、被人惧怕，以致我的瞳孔、我的眉眼、我的声音、我的笑貌都在乖顺地助力这份令人胆寒的天赋，它们先于我的意愿而生。因此，纵然我有心善待，但在我的目光下，这可怜的小子依旧忐忑。我越笑，他越能在这份绚烂的喜色中品出阴森的意味。",
-            "colorStyle": 4,
-            "type": 1,
-            "chapterUid": 19,
-            "createTime": 1781371819
+            "chapterUid": 11,
+            "createTime": 1772271053
         }
     ],
     "removed": [],
     "chapters": [
         {
-            "title": "18",
-            "chapterUid": 21,
-            "chapterIdx": 21
-        },
-        {
-            "title": "17",
-            "chapterUid": 20,
-            "chapterIdx": 20
-        },
-        {
-            "title": "16",
-            "chapterUid": 19,
-            "chapterIdx": 19
+            "title": "4 我的试炼之路 （1983—1994年）",
+            "chapterUid": 11,
+            "chapterIdx": 11
         }
     ],
     "book": {
-        "bookId": "CB_5Dw7ca7dh0yG6xs6x4EVz4oQ",
-        "version": 1347342057,
+        "bookId": "CB_0bz10l136GH471871DERDEr7",
+        "version": 480327860,
         "format": "epub",
         "soldout": 0,
         "bookStatus": 1,
-        "cover": "https://res.weread.qq.com/wrepub/CB_GSv5HF5HR4w46vw6x34z9Ebr_parsecover",
-        "title": "蛇结",
-        "author": "【法】弗朗索瓦·莫里亚克",
+        "cover": "https://res.weread.qq.com/wrepub/CB_0bz10l136GH471871DERDEr7_parsecover",
+        "title": "原则",
+        "author": "[美]瑞·达利欧",
         "coverBoxInfo": {
             "colorsPure": [
                 "#93B0DA",
