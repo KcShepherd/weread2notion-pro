@@ -1,6 +1,28 @@
 {
-    "synckey": 1782318532,
+    "synckey": 1782406192,
     "updated": [
+        {
+            "bookId": "CB_0bz10l136GH471871DERDEr7",
+            "chapterIdx": 11,
+            "bookmarkId": "CB_0bz10l136GH471871DERDEr7_11_19002-19055",
+            "range": "19002-19055",
+            "markText": "几乎总有一条道路是存在但你还没有找到的，所以你应该努力寻找直到找到，而不是凑合着接受那个看起来明显的选择。",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 11,
+            "createTime": 1782406192
+        },
+        {
+            "bookId": "CB_0bz10l136GH471871DERDEr7",
+            "chapterIdx": 11,
+            "bookmarkId": "CB_0bz10l136GH471871DERDEr7_11_18564-18601",
+            "range": "18564-18601",
+            "markText": "本公司未来的成功高度取决于瑞在人员管理方面能否像在投资管理方面做得一样好。",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 11,
+            "createTime": 1782406040
+        },
         {
             "bookId": "CB_0bz10l136GH471871DERDEr7",
             "chapterIdx": 11,
