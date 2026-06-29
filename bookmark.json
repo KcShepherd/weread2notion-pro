@@ -1,68 +1,79 @@
 {
-    "synckey": 1782406192,
+    "synckey": 1782752070,
     "updated": [
         {
-            "bookId": "CB_0bz10l136GH471871DERDEr7",
-            "chapterIdx": 11,
-            "bookmarkId": "CB_0bz10l136GH471871DERDEr7_11_19002-19055",
-            "range": "19002-19055",
-            "markText": "几乎总有一条道路是存在但你还没有找到的，所以你应该努力寻找直到找到，而不是凑合着接受那个看起来明显的选择。",
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 2,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_2_19528-19681",
+            "range": "19528-19681",
+            "markText": "所谓“为他人着想”，是一种“同频共振”，是一种“设身处地”——设想自己就是对方，处于对方所处的情境时，问自己的良知：“我该怎么做？”如果真的肯为他人着想，就一定会去了解他人所遇到之事的来龙去脉，并在对方的讲述中，把自己代入这件事情的情景之中，甚至会去思考他人的性情、行为，思考如何做才能使他人的利益最大化。",
             "colorStyle": 4,
             "type": 1,
-            "chapterUid": 11,
-            "createTime": 1782406192
+            "chapterUid": 2,
+            "createTime": 1782752070
         },
         {
-            "bookId": "CB_0bz10l136GH471871DERDEr7",
-            "chapterIdx": 11,
-            "bookmarkId": "CB_0bz10l136GH471871DERDEr7_11_18564-18601",
-            "range": "18564-18601",
-            "markText": "本公司未来的成功高度取决于瑞在人员管理方面能否像在投资管理方面做得一样好。",
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 2,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_2_17845-17903",
+            "range": "17845-17903",
+            "markText": "人之所以不幸福，不过是因为无事可做、胡思乱想；一旦有事做、有目标，便不会产生无聊感，琐碎事便不会乘虚而入，扰乱心神。",
             "colorStyle": 4,
             "type": 1,
-            "chapterUid": 11,
-            "createTime": 1782406040
+            "chapterUid": 2,
+            "createTime": 1782751883
         },
         {
-            "bookId": "CB_0bz10l136GH471871DERDEr7",
-            "chapterIdx": 11,
-            "bookmarkId": "CB_0bz10l136GH471871DERDEr7_11_15397-15488",
-            "range": "15397-15488",
-            "markText": "这一做法的成功教会了我一个原则，后来我把它应用到生活的所有方面：想要拥有很多优势，而又不暴露于不可接受的劣势之下，最稳妥的方式是做出一系列良好的、互不相关的押注，彼此平衡，相互补充。",
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 2,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_2_15212-15311",
+            "range": "15212-15311",
+            "markText": "做事的出发点和成果往往不在同一条水平线上，若想有优异的成果，就要定下更高的出发点；在立志一事上，就是必须立大志，即使这“大志”并不能完全实现，但若实现了一丁点儿，也许就能超过实现“小志”的最终成果。",
             "colorStyle": 4,
             "type": 1,
-            "chapterUid": 11,
-            "createTime": 1782318532
+            "chapterUid": 2,
+            "createTime": 1782751382
         },
         {
-            "bookId": "CB_0bz10l136GH471871DERDEr7",
-            "chapterIdx": 11,
-            "bookmarkId": "CB_0bz10l136GH471871DERDEr7_11_9150-9177",
-            "range": "9150-9177",
-            "markText": "我喜欢在有趣的地方认识有趣的人，并通过他们的眼睛看世界",
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 2,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_2_8821-8858",
+            "range": "8821-8858",
+            "markText": "向内求德，向外求才；德才兼备，方为圣贤。任何一个普通人，都应当立志“做圣贤",
             "colorStyle": 4,
             "type": 1,
-            "chapterUid": 11,
-            "createTime": 1772271053
+            "chapterUid": 2,
+            "createTime": 1782750952
+        },
+        {
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 2,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_2_7069-7180",
+            "range": "7069-7180",
+            "markText": "要解决这种“三分钟热度”的问题，以下几个方法可供参考。第一，尽可能找到自己喜欢的事情做。第二，耐得住寂寞。第三，抛掉虚荣心，随时提醒自己，做事不是为了给别人看。第四，“热度降低”时，告诉自己：不要放弃，不要放弃，不要放弃。",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 2,
+            "createTime": 1782750801
         }
     ],
     "removed": [],
     "chapters": [
         {
-            "title": "4 我的试炼之路 （1983—1994年）",
-            "chapterUid": 11,
-            "chapterIdx": 11
+            "title": "第一章 立志",
+            "chapterUid": 2,
+            "chapterIdx": 2
         }
     ],
     "book": {
-        "bookId": "CB_0bz10l136GH471871DERDEr7",
-        "version": 480327860,
+        "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+        "version": 1096506084,
         "format": "epub",
         "soldout": 0,
         "bookStatus": 1,
-        "cover": "https://res.weread.qq.com/wrepub/CB_0bz10l136GH471871DERDEr7_parsecover",
-        "title": "原则",
-        "author": "[美]瑞·达利欧",
+        "cover": "https://res.weread.qq.com/wrepub/CB_2jb5fH5hWAfW74Y75I3MX5ez_parsecover",
+        "title": "138719_知行合一王阳明：心学日课21天_度阴山",
+        "author": "度阴山",
         "coverBoxInfo": {
             "colorsPure": [
                 "#93B0DA",
