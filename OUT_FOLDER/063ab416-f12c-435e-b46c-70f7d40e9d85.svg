@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="792" height="148" viewBox="0 0 792 148">
 <rect width="792" height="148" fill="#FFFFFF"/>
-<text x="40" y="14" style="font-size:11px;font-family:Arial;font-weight:bold;" fill="#333">2026年累计阅读 43 小时</text>
+<text x="40" y="14" style="font-size:11px;font-family:Arial;font-weight:bold;" fill="#333">2026年累计阅读 44 小时</text>
 <text x="40" y="24" style="font-size:9px;font-family:Arial;" fill="#666">Jan</text>
 <text x="110" y="24" style="font-size:9px;font-family:Arial;" fill="#666">Feb</text>
 <text x="166" y="24" style="font-size:9px;font-family:Arial;" fill="#666">Mar</text>
@@ -200,8 +200,8 @@
 <rect x="390" y="112" width="12" height="12" rx="2" ry="2" fill="#ACE7AE"><title>2026-06-27: 4 min</title></rect>
 <rect x="404" y="28" width="12" height="12" rx="2" ry="2" fill="#EBEDF0"><title>2026-06-28: 0 min</title></rect>
 <rect x="404" y="42" width="12" height="12" rx="2" ry="2" fill="#ACE7AE"><title>2026-06-29: 16 min</title></rect>
-<rect x="404" y="56" width="12" height="12" rx="2" ry="2" fill="#ACE7AE"><title>2026-06-30: 18 min</title></rect>
-<rect x="404" y="70" width="12" height="12" rx="2" ry="2" fill="#EBEDF0"><title>2026-07-01: 0 min</title></rect>
+<rect x="404" y="56" width="12" height="12" rx="2" ry="2" fill="#ACE7AE"><title>2026-06-30: 22 min</title></rect>
+<rect x="404" y="70" width="12" height="12" rx="2" ry="2" fill="#ACE7AE"><title>2026-07-01: 16 min</title></rect>
 <rect x="404" y="84" width="12" height="12" rx="2" ry="2" fill="#EBEDF0"><title>2026-07-02: 0 min</title></rect>
 <rect x="404" y="98" width="12" height="12" rx="2" ry="2" fill="#EBEDF0"><title>2026-07-03: 0 min</title></rect>
 <rect x="404" y="112" width="12" height="12" rx="2" ry="2" fill="#EBEDF0"><title>2026-07-04: 0 min</title></rect>

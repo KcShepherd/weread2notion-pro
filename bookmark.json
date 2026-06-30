@@ -1,6 +1,17 @@
 {
-    "synckey": 1782752070,
+    "synckey": 1782839227,
     "updated": [
+        {
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 2,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_2_20447-20480",
+            "range": "20447-20480",
+            "markText": "没有正确的路径和意志力，很难有成功的事。这是阳明心学的“立志定律”",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 2,
+            "createTime": 1782839227
+        },
         {
             "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
             "chapterIdx": 2,
