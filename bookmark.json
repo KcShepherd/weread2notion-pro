@@ -1,6 +1,61 @@
 {
-    "synckey": 1782839227,
+    "synckey": 1782924790,
     "updated": [
+        {
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 3,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_3_5830-6130",
+            "range": "5830-6130",
+            "markText": "如果做一件事时犹豫不决，那是得失心在搞鬼；如果做一件事时，既要这样又要那样，那是欲望在捣乱。此时，放下脑海中的一切计算和纠结，找个安静的地方坐下来。心平气和后，询问自己的良心，这事能不能做？做之后会不会后悔？如果得到事情能做且不会后悔的答案，便去做；如果得到事情不能做且做了就会后悔的答案，便不要做。\n一件事成功与否不重要，重要的是事成或事败后，你是否后悔。",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 3,
+            "createTime": 1782924790
+        },
+        {
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 3,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_3_5496-5555",
+            "range": "5496-5555",
+            "markText": "这大概就是得道多助。但我更倾向于这样的解释：做正确的事情就是在追随自身的良知，当你追随自身的良知时，别人必定会追随你。",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 3,
+            "createTime": 1782924705
+        },
+        {
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 3,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_3_4858-4894",
+            "range": "4858-4894",
+            "markText": "格物就是首先要做对的事，才有可能把事做对；也只有把事做对，才对自身有利。",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 3,
+            "createTime": 1782924598
+        },
+        {
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 3,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_3_4042-4089",
+            "range": "4042-4089",
+            "markText": "人生道理千千万万，没必要全懂，但至少要懂得这一条：做任何事都要按心走，在必要的事上要“走心”。",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 3,
+            "createTime": 1782924488
+        },
+        {
+            "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
+            "chapterIdx": 2,
+            "bookmarkId": "CB_2jb5fH5hWAfW74Y75I3MX5ez_2_20757-20992",
+            "range": "20757-20992",
+            "markText": "做正确的事”体现了“选择比努力更重要”，而当你选择“做正确的事”后，事情已经做对了百分之九十，这就是“把事情做对”。\n如何选择“做正确的事”？哪怕你不知道什么是正确的事，也一定知道什么是错误的事，停止做错误的事，便是在做正确的事",
+            "colorStyle": 4,
+            "type": 1,
+            "chapterUid": 2,
+            "createTime": 1782923474
+        },
         {
             "bookId": "CB_2jb5fH5hWAfW74Y75I3MX5ez",
             "chapterIdx": 2,
@@ -74,6 +129,11 @@
             "title": "第一章 立志",
             "chapterUid": 2,
             "chapterIdx": 2
+        },
+        {
+            "title": "第二章 格物",
+            "chapterUid": 3,
+            "chapterIdx": 3
         }
     ],
     "book": {
